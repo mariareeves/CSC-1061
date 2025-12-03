@@ -228,7 +228,75 @@ public class Graph<E> {
 	** The spanning tree will be a new graph
 	*/
 	public Graph<E> findMinimumSpanningTree() {
-		
-		return null;
+		// make a new graph to store the MST
+		// this copies the vertex keys into a new graph
+		Graph<E> mst = new Graph<>(this.vertices);
+
+		// list to hold all edges in the original graph
+		List<Edge> allEdges = new ArrayList<>();
+
+		// get all edges but avoid duplicates
+		for (Vertex v : vertices) {
+			for (Edge e : v.neighbors) {
+
+				// get the positions of the two vertices
+				int uIndex = vertices.indexOf(e.s);
+				int vIndex = vertices.indexOf(e.d);
+
+				// only add the edge once when left index < right index
+				if (uIndex < vIndex) {
+					allEdges.add(e);
+				}
+			}
+		}
+
+		// sort edges by weight
+		Collections.sort(allEdges);
+
+		// union-find setup
+		// parent[i] tells us which set each vertex is in
+		int[] parent = new int[vertices.size()];
+
+		// each vertex starts in its own set
+		for (int i = 0; i < parent.length; i++) {
+			parent[i] = i;
+		}
+
+		// helper method to find the root of a set
+		java.util.function.IntUnaryOperator find = x -> {
+			while (parent[x] != x) {
+				x = parent[x];
+			}
+			return x;
+		};
+
+		// go through each edge in sorted order
+		for (Edge e : allEdges) {
+
+			// get the index of each endpoint
+			int ui = vertices.indexOf(e.s);
+			int vi = vertices.indexOf(e.d);
+
+			// find their roots
+			int rootU = find.applyAsInt(ui);
+			int rootV = find.applyAsInt(vi);
+
+			// if roots are different, adding this edge won't make a cycle
+			if (rootU != rootV) {
+
+				// join the two sets
+				parent[rootV] = rootU;
+
+				// now add this edge to the MST graph
+				Vertex mstU = mst.findVertex(e.s.getKey());
+				Vertex mstV = mst.findVertex(e.d.getKey());
+
+				// add the edge in both directions
+				mst.addEdge(mst.new Edge(mstU, mstV, e.weight));
+				mst.addEdge(mst.new Edge(mstV, mstU, e.weight));
+			}
+		}
+
+		return mst;
 	}
 }

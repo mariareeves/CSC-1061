@@ -25,10 +25,36 @@ public class GraphTest {
 		System.out.println("Original Graph:");
 		graph.printEdges();
 		
-//		System.out.println("Minimum Spanning Tree:");
-//		graph.findMinimumSpanningTree().printEdges();
+		System.out.println("Minimum Spanning Tree:");
+		graph.findMinimumSpanningTree().printEdges();
 
 
+		// ------------------------------------------
+		// my own testing edge cases
+
+
+		List<Integer> vertices2 = new ArrayList<>();
+		for (int i = 0; i < 4; i++) {  // vertices: 0, 1, 2, 3
+			vertices2.add(i);
+		}
+
+		// simple graph to test MST
+		Integer[][] edges2 = {
+				{0, 1, 1}, {1, 0, 1},
+				{1, 2, 2}, {2, 1, 2},
+				{2, 3, 3}, {3, 2, 3},
+				{0, 2, 5}, {2, 0, 5},
+				{0, 3, 10}, {3, 0, 10}
+		};
+
+		Graph<Integer> testGraph = new Graph<>(vertices2, edges2);
+
+		System.out.println("\n--- My Own Testing Graph ---");
+		System.out.println("Test Graph (original):");
+		testGraph.printEdges();
+
+		System.out.println("Test Graph (MST):");
+		testGraph.findMinimumSpanningTree().printEdges();
 
 
 
